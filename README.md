@@ -21,5 +21,8 @@ IntelliFridge ist ein kleines Warenwirtschaftssystem für den privaten Kühlschr
 - 00 = Warenausgabe (Standard)
 - 01 = Wareneingabe
 
+## Screenshots
+![Konsolenausgabe](http://img.gruessung.eu/?f=1435328301.png)
+
 ## License
 MIT
