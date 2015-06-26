@@ -11,5 +11,15 @@ IntelliFridge ist ein kleines Warenwirtschaftssystem für den privaten Kühlschr
 - Statistiken zur Auswertung
 - HandyApp für Abfrage des aktuellen Bestands
 
+## Anleitung
+- SQLite mit einem Editor leeren, da Testdaten enthalten sind
+- php5-readline und php5-sqlite installieren
+- <code>php read.php</code> ausführen
+- EAN eingeben (Modi wechseln nicht vergessen)
+
+## Modi
+- 00 = Warenausgabe (Standard)
+- 01 = Wareneingabe
+
 ## License
 MIT
