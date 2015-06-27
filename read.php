@@ -1,5 +1,6 @@
 <?php
     require_once("sqliteConnector.class.php");
+    require_once("dom.php");
 
     $bRead = true;
     $bModus = 0; //Modus, 0 = Ausgabe, 1 = Eingabe
@@ -28,16 +29,40 @@
             default:
 
                 //Lade Produkt von API
-                $sXML = file_get_contents('http://api.gvisions.de/barcode/getEAN.php?ean='.$iEAN);
-                $oXML = simplexml_load_string($sXML);
 
-                echo "EAN ".$iEAN.' gehoert zu Produkt "'.$oXML->item->name.'"'.PHP_EOL;
+
+
+
 
                 if ($oDb->checkRow('artikel', 'ean', $iEAN) == false)
                 {
-                    $oDb->insert('artikel', array('ean', 'name', 'angelegt'), array($iEAN, utf8_encode($oXML->item->name), time()));
+                    //Daten laden aus API
+                    $html = file_get_html('http://www.opengtindb.org/index.php?cmd=ean1&ean='.$iEAN.'&sq=1');
+
+                    foreach ($html->find('INPUT[name=fullname]') as $e)
+                    {
+                        $t = trim($e->value);
+                        if ( empty($t) == false)
+                        {
+                            $name = $e->value;
+                        }
+
+                    }
+
+                    if (empty($name)) $name = "Unbekannt";
+
+
+
+                    $oDb->insert('artikel', array('ean', 'name', 'angelegt'), array($iEAN, utf8_encode($name), time()));
                     echo 'Datensatz in DB geschrieben.'.PHP_EOL;
                 }
+                else
+                {
+                    $aRes = $oDb->query("SELECT * FROM artikel WHERE ean = $iEAN")->fetchArray();
+                    $name = $aRes['name'];
+                }
+
+                echo "EAN ".$iEAN.' gehoert zu Produkt "'.$name.'"'.PHP_EOL;
 
                 //Schauen ob es schon einen Eintrag in bestand gibt
                 if ($oDb->checkRow('bestand', 'ean', $iEAN))
@@ -65,7 +90,7 @@
                 {
                     if ($bModus == 0)
                     {
-                        echo "Noch kein Bestand vorhanden, keine Ausgabe möglich...".PHP_EOL;
+                        echo "Noch kein Bestand vorhanden, keine Ausgabe moeglich...".PHP_EOL;
                     }
                     else
                     {
